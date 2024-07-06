@@ -1,5 +1,5 @@
 [IOC World Bird List v14.1]
-[© 2024 Marc Choisy https://github.com/choisy/life_structured_keywords/blob/main/ioc.txt]
+[© 2024 Marc Choisy https://raw.githubusercontent.com/choisy/life_structured_keywords/main/ioc.txt]
 [06/07/2024]
 Eukaryota
 	{Eukaryotes}
