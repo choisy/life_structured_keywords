@@ -1,16 +1,25 @@
+library(magrittr)
+library(stringr)
 library(readxl)
 library(dplyr)
 library(purrr)
-library(magrittr)
-library(stringr)
 
-a <- read_excel("~/Library/CloudStorage/OneDrive-OxfordUniversityClinicalResearchUnit/GitHub/choisy/life_structured_keywords/master_ioc_list_v14.1.xlsx",
-                range = "A4:J33678") |> 
+site <- "https://worldbirdnames.org/"
+file <- "master_ioc_list_v14.1.xlsx"
+
+## Reading the excel file from worldbirdnames.org #####################################
+
+if (! file.exists(file)) download.file(paste0(site, file), file)
+
+a <- read_excel(file, range = "A4:J33678") |> 
   tail(-1) |> 
   filter(is.na(Infraclass), is.na(Parvclass)) |> 
   select(-Subspecies, -Authority, -Infraclass, -Parvclass) |> 
   filter(if_any(everything(), ~ !is.na(.))) |> 
-  mutate(across(contains("English"), ~ na_if(paste0("{", ., "}"), "{NA}")))
+  mutate(across(contains("English"), ~ na_if(paste0("{", ., "}"), "{NA}"))) |> 
+  mutate(across(Order, str_to_title))
+
+## Rewriting the species names with the binomial form #################################
 
 genus <- a$Genus
 
@@ -39,7 +48,7 @@ species2[which(is.na(species))] <- NA
 
 a$`Species (Scientific)` <- c(NA, NA, species2)
 
-#################################################
+## Moving the English family names to the right place #################################
 
 idx <- which(! is.na(a$`Family (English)`))
 a$Genus[idx] <- a$`Family (English)`[idx]
@@ -53,7 +62,7 @@ for (i in idx) {
                  rbind(a[1:(i - 1), 3:5], na2, a[-(1:(i - 1)), 3:5]))  
 }
 
-##########
+## Moving the English species names to the right place ################################
 
 idx <- which(! is.na(a$`Species (English)`))
 idx <- idx + cumsum(rep(1, length(idx))) - 1
@@ -63,10 +72,23 @@ for (i in idx) {
                  rbind(a[1:(i - 1), 5], NA, a[-(1:(i - 1)), 5]))  
 }
 
-############
+## Writing the text file ##############################################################
 
 a |> 
   apply(1, paste, collapse = " ") |>
   str_remove("( NA)*$") |> 
-  str_replace_all("NA ", "\t") |> 
-  write("marc.txt")
+  str_replace_all("NA ", "\t") %>%
+  paste0("\t\t\t\t\t", .) %>%
+  c("[IOC World Bird List v14.1]",
+    "[© 2024 Marc Choisy https://github.com/choisy/life_structured_keywords/blob/main/ioc.txt]",
+    "[06/07/2024]",
+    "Eukaryota", 
+    "\t{Eukaryotes}",
+    "\tAnimalia",
+    "\t\t{Animals}",
+    "\t\t{Animaux}",
+    "\t\tChordata",
+    "\t\t\tAves",
+    "\t\t\t\t{Birds}",
+    "\t\t\t\t{Oiseaux}", .) |> 
+  write("ioc.txt")
