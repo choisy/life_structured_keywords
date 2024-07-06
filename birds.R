@@ -8,7 +8,8 @@ a <- read_excel("~/Library/CloudStorage/OneDrive-OxfordUniversityClinicalResearc
   tail(-1) |> 
   filter(is.na(Infraclass), is.na(Parvclass)) |> 
   select(-Subspecies, -Authority, -Infraclass, -Parvclass) |> 
-  filter(if_any(everything(), ~ !is.na(.))) #|> 
+  filter(if_any(everything(), ~ !is.na(.))) |> 
+  mutate(across(contains("English"), ~ na_if(paste0("{", ., "}"), "{NA}")))
 
 genus <- a$Genus
 
@@ -36,6 +37,18 @@ species2 <- genus |>
 species2[which(is.na(species))] <- NA
 
 a$`Species (Scientific)` <- c(NA, NA, species2)
+
+#################################################
+
+b <- a$`Family (English)`
+
+add_curly <- function(x) {
+  na_if(paste0("{", x, "}"), "{NA}")
+}
+
+
+a |> 
+  mutate(across(contains("English"), ~ na_if(paste0("{", ., "}"), "{NA}")))
 
 
 # Struthioniformes
