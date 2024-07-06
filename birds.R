@@ -2,6 +2,7 @@ library(readxl)
 library(dplyr)
 library(purrr)
 library(magrittr)
+library(stringr)
 
 a <- read_excel("~/Library/CloudStorage/OneDrive-OxfordUniversityClinicalResearchUnit/GitHub/choisy/life_structured_keywords/master_ioc_list_v14.1.xlsx",
                 range = "A4:J33678") |> 
@@ -62,16 +63,10 @@ for (i in idx) {
                  rbind(a[1:(i - 1), 5], NA, a[-(1:(i - 1)), 5]))  
 }
 
+############
 
-
-
-# Struthioniformes
-#   Struthionidae
-#     {ostriches}
-#     Struthio
-#       Struthio camelus
-#         {common ostrich}
-#       Struthio molybdophanes
-#         {Somali ostrich}
-
-
+a |> 
+  apply(1, paste, collapse = " ") |>
+  str_remove("( NA)*$") |> 
+  str_replace_all("NA ", "\t") |> 
+  write("marc.txt")
