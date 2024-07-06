@@ -40,18 +40,28 @@ a$`Species (Scientific)` <- c(NA, NA, species2)
 
 #################################################
 
-a2 <- a
 idx <- which(! is.na(a$`Family (English)`))
-a2$Genus[idx] <- a2$`Family (English)`[idx]
-a2$`Family (English)` <- NULL
+a$Genus[idx] <- a$`Family (English)`[idx]
+a$`Family (English)` <- NULL
 idx <- idx + cumsum(rep(1, length(idx))) - 1
 na1 <- rep(NA, 2)
 na2 <- rep(NA, 3)
 
 for (i in idx) {
-  a2 <- bind_cols(rbind(a2[1:i, 1:2], na1, a2[-(1:i), 1:2]),
-                  rbind(a2[1:(i - 1), 3:5], na2, a2[-(1:(i - 1)), 3:5]))  
+  a <- bind_cols(rbind(a[1:i, 1:2], na1, a[-(1:i), 1:2]),
+                 rbind(a[1:(i - 1), 3:5], na2, a[-(1:(i - 1)), 3:5]))  
 }
+
+##########
+
+idx <- which(! is.na(a$`Species (English)`))
+idx <- idx + cumsum(rep(1, length(idx))) - 1
+na3 <- rep(NA, 4)
+for (i in idx) {
+  a <- bind_cols(rbind(a[1:i, 1:4], na3, a[-(1:i), 1:4]),
+                 rbind(a[1:(i - 1), 5], NA, a[-(1:(i - 1)), 5]))  
+}
+
 
 
 
