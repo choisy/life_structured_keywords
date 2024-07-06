@@ -40,15 +40,19 @@ a$`Species (Scientific)` <- c(NA, NA, species2)
 
 #################################################
 
-b <- a$`Family (English)`
+a2 <- a
+idx <- which(! is.na(a$`Family (English)`))
+a2$Genus[idx] <- a2$`Family (English)`[idx]
+a2$`Family (English)` <- NULL
+idx <- idx + cumsum(rep(1, length(idx))) - 1
+na1 <- rep(NA, 2)
+na2 <- rep(NA, 3)
 
-add_curly <- function(x) {
-  na_if(paste0("{", x, "}"), "{NA}")
+for (i in idx) {
+  a2 <- bind_cols(rbind(a2[1:i, 1:2], na1, a2[-(1:i), 1:2]),
+                  rbind(a2[1:(i - 1), 3:5], na2, a2[-(1:(i - 1)), 3:5]))  
 }
 
-
-a |> 
-  mutate(across(contains("English"), ~ na_if(paste0("{", ., "}"), "{NA}")))
 
 
 # Struthioniformes
