@@ -29,6 +29,39 @@ get_index <- function(df, cl) {
     { setdiff(min(.):max(.), .) }
 }
 
+get_index2 <- function(x) {
+  x |> 
+    as_tibble() |> 
+    tibble::rownames_to_column() |> 
+    group_by(value) |> 
+    group_modify(~ first(.)) |> 
+    mutate(across(rowname, as.integer)) |> 
+    arrange(rowname) |> 
+    pull(rowname) %>% 
+    { setdiff(min(.):max(.), .) }
+}
+
+
+reformat <- function(df, cl) {
+  x <- pull(df, {{ cl }})
+  x[get_index(df, {{ cl }})] <- ""
+  df |> 
+    mutate(across({{ cl }}, ~ x))
+}
+
+reformat2 <- function(x) {
+  x[get_index2(x)] <- ""
+  x
+}
+
+a |> 
+  mutate(across(c(Order, Family, genus), reformat2))
+
+a |> 
+  reformat(Order) |> 
+  reformat(Family) |> 
+  reformat(genus)
+
 a$Order[get_index(a, Order)] <- ""
 a$Family[get_index(a, Family)] <- ""
 a$genus[get_index(a, genus)] <- ""
