@@ -40,7 +40,7 @@ write_file <- function(x, file, long = TRUE) {
   file.remove("tmp.txt")
   
   header <- c("[Global Mammal Checklist 2024]",
-              "[© 2024 Marc Choisy https://raw.githubusercontent.com/choisy/life_structured_keywords/main/ioc.txt]",
+              "[© 2024 Marc Choisy https://www.instagram.com/marcchoisy]",
               "[16/07/2024]")
   
   if (long) {

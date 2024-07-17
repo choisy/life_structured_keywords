@@ -80,7 +80,7 @@ a |>
   str_replace_all("NA ", "\t") %>%
   paste0("\t\t\t\t\t", .) %>%
   c("[IOC World Bird List v14.1]",
-    "[© 2024 Marc Choisy https://raw.githubusercontent.com/choisy/life_structured_keywords/main/ioc.txt]",
+    "[© 2024 Marc Choisy https://www.instagram.com/marcchoisy]",
     "[06/07/2024]",
     "Eukaryota", 
     "\t{Eukaryotes}",
