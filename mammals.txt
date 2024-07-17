@@ -1,6 +1,6 @@
-[Global Mammal Checklist 2024]
+[Global Mammal Checklist 2024 https://www.mammalwatching.com]
 [© 2024 Marc Choisy https://www.instagram.com/marcchoisy]
-[17/07/2024]
+[17 Jul 2024]
 Eukaryota
 	{Eukaryotes}
 	Animalia

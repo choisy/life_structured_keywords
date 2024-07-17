@@ -39,10 +39,10 @@ write_file <- function(x, file, long = TRUE) {
     grep("^(\t)*$", ., value = TRUE, invert = TRUE)
   file.remove("tmp.txt")
   
-  header <- c("[Global Mammal Checklist 2024]",
+  header <- c("[Global Mammal Checklist 2024 https://www.mammalwatching.com]",
               "[© 2024 Marc Choisy https://www.instagram.com/marcchoisy]",
-              "[16/07/2024]")
-  
+              paste0("[", format(Sys.time(), "%e %b %Y"), "]"))
+    
   if (long) {
     x %>%
       paste0("\t\t\t\t", .) %>%

@@ -79,9 +79,9 @@ a |>
   str_remove("( NA)*$") |> 
   str_replace_all("NA ", "\t") %>%
   paste0("\t\t\t\t\t", .) %>%
-  c("[IOC World Bird List v14.1]",
+  c("[IOC World Bird List v14.1 https://worldbirdnames.org]",
     "[© 2024 Marc Choisy https://www.instagram.com/marcchoisy]",
-    "[06/07/2024]",
+    paste0("[", format(Sys.time(), "%e %b %Y"), "]"),
     "Eukaryota", 
     "\t{Eukaryotes}",
     "\tAnimalia",
@@ -91,4 +91,4 @@ a |>
     "\t\t\tAves",
     "\t\t\t\t{Birds}",
     "\t\t\t\t{Oiseaux}", .) |> 
-  write("ioc.txt")
+  write("birds.txt")

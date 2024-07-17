@@ -1,6 +1,6 @@
-[IOC World Bird List v14.1]
-[© 2024 Marc Choisy https://raw.githubusercontent.com/choisy/life_structured_keywords/main/ioc.txt]
-[06/07/2024]
+[IOC World Bird List v14.1 https://worldbirdnames.org]
+[© 2024 Marc Choisy https://www.instagram.com/marcchoisy]
+[17 Jul 2024]
 Eukaryota
 	{Eukaryotes}
 	Animalia
