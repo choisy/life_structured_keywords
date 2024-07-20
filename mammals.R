@@ -87,13 +87,10 @@ if (! file.exists(file)) download.file(paste0(site, year, "/", month, "/", file)
 
 # Loading the raw data: ---------------------------------------------------------------
 original_version <- read_excel(file, range = "D5:Z6642") |> 
-  rename(AltCommName = `...4`) |>
   separate(`Scientific Name`, c("genus", "species")) |> 
-  mutate(species = paste(genus, species)) |>
-  select(Order, Family, genus, species, `Common Name`, AltCommName, Country, Continent,
-         `Biogeographic Realm`) |> 
+  mutate(species       = paste(genus, species),
+         `Common Name` = paste(`Common Name`, `...4`, sep = "|")) |> 
   mutate(across(c(Order, Family), str_to_title)) |> 
-  filter(Country != "NA") |> # removes humans
   mutate(across(`Biogeographic Realm`,
                 ~ str_replace_all(., "Afrotropics", "Afrotropic") |> 
                   str_replace_all("Palearcic", "Palearctic"))) |> 
@@ -103,7 +100,10 @@ original_version <- read_excel(file, range = "D5:Z6642") |>
                   str_replace_all("CuraÃ§ao", "Curaçao") |> 
                   str_replace_all("Japana", "Japan") |> 
                   str_replace_all("Myanma", "Myanmar") |> 
-                  str_replace_all("Saint BarthÃ©lemy", "Saint Barthelemy")))
+                  str_replace_all("Saint BarthÃ©lemy", "Saint Barthelemy"))) |> 
+  select(Order, Family, genus, species, `Common Name`, Country, Continent,
+         `Biogeographic Realm`) |> 
+  filter(Country != "NA") # removes humans
 
 # Making the wide version of the data: ------------------------------------------------
 
@@ -134,9 +134,8 @@ for (i in countries) {
   wide_version[, i] <- grepl(i, wide_version$Country)
 }
 
-wide_version <- select(wide_version,
-                       -`Biogeographic Realm`, -`Australasia/Oceania`,
-                       -Continent, -Country)
+wide_version %<> %select(-`Biogeographic Realm`, -`Australasia/Oceania`,
+                         -Continent, -Country)
 
 # Writing to file: --------------------------------------------------------------------
 original_version |> 
