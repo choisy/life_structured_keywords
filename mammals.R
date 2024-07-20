@@ -84,18 +84,15 @@ original_version <- read_excel(file, range = "D5:Z6642") |>
   mutate(across(c(Order, Family), str_to_title)) |> 
   filter(Country != "NA") |> # removes humans
   mutate(across(`Biogeographic Realm`,
-                ~ str_replace_all(., "Afrotropics", "Afrotropic"))) |> 
-  mutate(across(`Biogeographic Realm`,
-                ~ str_replace_all(., "Palearcic", "Palearctic"))) |> 
+                ~ str_replace_all(., "Afrotropics", "Afrotropic") |> 
+                  str_replace_all("Palearcic", "Palearctic"))) |> 
   mutate(across(Continent, ~ str_remove_all(., "\\?"))) |>
-  mutate(across(Country, ~ str_remove_all(., "\\?"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Bosnia & Hercegovina",
-                                              "Bosnia & Herzegovina"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "CuraÃ§ao", "Curaçao"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Japana", "Japan"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Myanma", "Myanmar"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Saint BarthÃ©lemy",
-                                              "Saint Barthelemy")))
+  mutate(across(Country, ~ str_remove_all(., "\\?") |> 
+                  str_replace_all("Bosnia & Hercegovina", "Bosnia & Herzegovina") |> 
+                  str_replace_all("CuraÃ§ao", "Curaçao") |> 
+                  str_replace_all("Japana", "Japan") |> 
+                  str_replace_all("Myanma", "Myanmar") |> 
+                  str_replace_all("Saint BarthÃ©lemy", "Saint Barthelemy")))
 
 # Making the wide version of the data: ------------------------------------------------
 realms <- original_version |> 
