@@ -1,6 +1,6 @@
 [Global Mammal Checklist 2024 https://www.mammalwatching.com]
 [© 2024 Marc Choisy https://www.instagram.com/marcchoisy]
-[17 Jul 2024]
+[20 Jul 2024]
 Eukaryota
 	{Eukaryotes}
 	Animalia
@@ -2431,9 +2431,6 @@ Eukaryota
 								{Eastern Gorilla}
 							Gorilla gorilla
 								{Western Gorilla}
-						Homo
-							Homo sapiens
-								{Human}
 						Pan
 							Pan paniscus
 								{Bonobo}
@@ -18165,8 +18162,6 @@ Eukaryota
 							Lasiurus xanthinus
 								{Western Yellow Bat}
 						Nycticeius
-							Nycticeius aenobarbus
-								{Temminck's Mysterious Bat}
 							Nycticeius cubanus
 								{Cuban Evening Bat}
 							Nycticeius humeralis

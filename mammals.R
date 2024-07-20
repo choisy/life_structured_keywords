@@ -1,13 +1,20 @@
 library(readxl)
 library(dplyr)
 library(tidyr)
+library(stringr)
 
+# Functions: --------------------------------------------------------------------------
+
+grep2 <- function(x, pattern, ...) grep(pattern, x, value = TRUE, invert = TRUE, ...)
+
+# Downloading the raw data: -----------------------------------------------------------
 file <- "Mammal-Taxonomy-Jan-14-2024.xlsx"
 year <- 2024
 month <- "03"
 site <- "https://www.mammalwatching.com/wp-content/uploads/"
 if (! file.exists(file)) download.file(paste0(site, year, "/", month, "/", file), file)
 
+# This function gets the row index where the name of the taxon should be deleted: -----
 get_index <- function(x) {
   x |> 
     as_tibble() |> 
@@ -17,15 +24,16 @@ get_index <- function(x) {
     mutate(across(rowname, as.integer)) |> 
     arrange(rowname) |> 
     pull(rowname) %>% 
-#    { setdiff(min(.):max(.), .) }
     { setdiff(seq_along(x), .) }
 }
 
+# This function removes the taxon names after the first occurence: --------------------
 reformat <- function(x) {
   x[get_index(x)] <- ""
   x
 }
 
+# This function writes the data on file: ----------------------------------------------
 write_file <- function(x, file, long = TRUE) {
   x |> 
     select(-(Country:`Biogeographic Realm`)) |> 
@@ -33,10 +41,10 @@ write_file <- function(x, file, long = TRUE) {
     write("tmp.txt")
   
   x <- readLines("tmp.txt") |> 
-    trimws(whitespace = " ") %>%
-    grep("^$", ., value = TRUE, invert = TRUE) %>%
-    grep("NA", ., value = TRUE, invert = TRUE) %>%
-    grep("^(\t)*$", ., value = TRUE, invert = TRUE)
+    trimws(whitespace = " ") |> 
+    grep2("^$") |> 
+    grep2("NA") |> 
+    grep2("^(\t)*$")
   file.remove("tmp.txt")
   
   header <- c("[Global Mammal Checklist 2024 https://www.mammalwatching.com]",
@@ -60,14 +68,33 @@ write_file <- function(x, file, long = TRUE) {
   }
 }
 
+#######################################################################################
+
+# Loading the raw data: ---------------------------------------------------------------
 original_version <- read_excel(file, range = "D5:Z6642") |> 
   rename(AltCommName = `...4`) |>
   separate(`Scientific Name`, c("genus", "species")) |> 
   mutate(species = paste(genus, species)) |>
   select(Order, Family, genus, species, `Common Name`, AltCommName, Country, Continent,
          `Biogeographic Realm`) |> 
-  mutate(across(c(Order, Family), str_to_title))
+  mutate(across(c(Order, Family), str_to_title)) |> 
+  filter(Country != "NA") |> # removes humans
+  mutate(across(`Biogeographic Realm`,
+                ~ str_replace_all(., "Afrotropics", "Afrotropic"))) |> 
+  mutate(across(`Biogeographic Realm`,
+                ~ str_replace_all(., "Palearcic", "Palearctic"))) |> 
+  mutate(across(Continent, ~ str_remove_all(., "\\?"))) |>
+  mutate(across(Country, ~ str_remove_all(., "\\?"))) |> 
+  mutate(across(Country, ~ str_replace_all(., "Bosnia & Hercegovina",
+                                              "Bosnia & Herzegovina"))) |> 
+  mutate(across(Country, ~ str_replace_all(., "CuraÃ§ao", "Curaçao"))) |> 
+  mutate(across(Country, ~ str_replace_all(., "Japana", "Japan"))) |> 
+  mutate(across(Country, ~ str_replace_all(., "Myanma", "Myanmar"))) |> 
+  mutate(across(Country, ~ str_replace_all(., "Saint BarthÃ©lemy",
+                                              "Saint Barthelemy")))
 
+
+# Writing to file: --------------------------------------------------------------------
 original_version |> 
   mutate(across(c(Order, Family, genus), reformat)) |> 
   mutate(across(Family,  ~ paste0("\n\t", .))) |> 
@@ -77,19 +104,9 @@ original_version |>
   mutate(across(AltCommName, ~ str_replace_all(., "\\|", "}\n\t\t\t\t{"))) |>
   write_file("mammals.txt")
 
-#######################################################################################
+# Making the wide version of the data: ------------------------------------------------
 
-corrected_version <- filter(original_version, Country != "NA")
-
-## Expanding the Biogeographical realms: ##############################################
-
-corrected_version <- corrected_version |> 
-  mutate(across(`Biogeographic Realm`,
-                ~ str_replace_all(., "Afrotropics", "Afrotropic"))) |> 
-  mutate(across(`Biogeographic Realm`,
-                ~ str_replace_all(., "Palearcic", "Palearctic")))
-
-realms <- corrected_version |> 
+realms <- original_version |> 
   pull(`Biogeographic Realm`) |> 
   unique() |> 
   strsplit("\\|") |>
@@ -97,22 +114,7 @@ realms <- corrected_version |>
   unique() |>
   sort()
 
-for (i in realms) {
-  corrected_version[, i] <- grepl(i, corrected_version$`Biogeographic Realm`)
-}
-
-corrected_version <- select(corrected_version,
-                            -`Biogeographic Realm`, -`Australasia/Oceania`)
-
-corrected_version |> 
-  filter(Domesticated)
-
-## Expanding the Continents: ##########################################################
-
-corrected_version <- mutate(corrected_version,
-                            across(Continent, ~ str_remove_all(., "\\?")))
-
-continents <- corrected_version |> 
+continents <- original_version |> 
   pull(Continent) |> 
   unique() |> 
   strsplit("\\|") |>
@@ -120,36 +122,30 @@ continents <- corrected_version |>
   unique() |>
   sort()
 
-for (i in continents) {
-  corrected_version[, i] <- grepl(i, corrected_version$Continent)
-}
-
-corrected_version <- select(corrected_version, -Continent)
-
-corrected_version
-
-## Expanding the countries: ###########################################################
-
-corrected_version <- corrected_version |>
-  mutate(across(Country, ~ str_remove_all(., "\\?"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Bosnia & Hercegovina", "Bosnia & Herzegovina"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "CuraÃ§ao", "Curaçao"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Japana", "Japan"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Myanma", "Myanmar"))) |> 
-  mutate(across(Country, ~ str_replace_all(., "Saint BarthÃ©lemy", "Saint Barthelemy")))
-
-countries <- corrected_version |> 
+countries <- original_version |> 
   pull(Country) |> 
   unique() |> 
   strsplit("\\|") |>
   unlist() |>
   trimws() |> 
   unique() |>
-  sort() %>%
-  grep("^$", ., value = TRUE, invert = TRUE)
+  sort() |> 
+  grep2("^$")
 
-for (i in countries) {
-  corrected_version[, i] <- grepl(i, corrected_version$Country)
+wide_version <- original_version
+
+for (i in realms) {
+  wide_version[, i] <- grepl(i, wide_version$`Biogeographic Realm`)
 }
 
-corrected_version <- select(corrected_version, -Country)
+for (i in continents) {
+  wide_version[, i] <- grepl(i, wide_version$Continent)
+}
+
+for (i in countries) {
+  wide_version[, i] <- grepl(i, wide_version$Country)
+}
+
+wide_version <- select(wide_version,
+                       -`Biogeographic Realm`, -`Australasia/Oceania`,
+                       -Continent, -Country)
