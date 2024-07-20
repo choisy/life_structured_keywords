@@ -2,17 +2,18 @@ library(readxl)
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(purrr)
+library(magrittr)
 
-# Functions: --------------------------------------------------------------------------
-
-grep2 <- function(x, pattern, ...) grep(pattern, x, value = TRUE, invert = TRUE, ...)
-
-# Downloading the raw data: -----------------------------------------------------------
+# Parameters: -------------------------------------------------------------------------
+site <- "https://www.mammalwatching.com/wp-content/uploads/"
 file <- "Mammal-Taxonomy-Jan-14-2024.xlsx"
 year <- 2024
 month <- "03"
-site <- "https://www.mammalwatching.com/wp-content/uploads/"
-if (! file.exists(file)) download.file(paste0(site, year, "/", month, "/", file), file)
+
+# Functions: --------------------------------------------------------------------------
+# Tuning grep():
+grep2 <- function(x, pattern, ...) grep(pattern, x, value = TRUE, invert = TRUE, ...)
 
 # This function gets the row index where the name of the taxon should be deleted: -----
 get_index <- function(x) {
@@ -27,7 +28,7 @@ get_index <- function(x) {
     { setdiff(seq_along(x), .) }
 }
 
-# This function removes the taxon names after the first occurence: --------------------
+# This function removes the taxon names after the first occurrence: -------------------
 reformat <- function(x) {
   x[get_index(x)] <- ""
   x
@@ -70,6 +71,9 @@ write_file <- function(x, file, long = TRUE) {
 
 #######################################################################################
 
+# Downloading the raw data: -----------------------------------------------------------
+if (! file.exists(file)) download.file(paste0(site, year, "/", month, "/", file), file)
+
 # Loading the raw data: ---------------------------------------------------------------
 original_version <- read_excel(file, range = "D5:Z6642") |> 
   rename(AltCommName = `...4`) |>
@@ -93,19 +97,7 @@ original_version <- read_excel(file, range = "D5:Z6642") |>
   mutate(across(Country, ~ str_replace_all(., "Saint BarthÃ©lemy",
                                               "Saint Barthelemy")))
 
-
-# Writing to file: --------------------------------------------------------------------
-original_version |> 
-  mutate(across(c(Order, Family, genus), reformat)) |> 
-  mutate(across(Family,  ~ paste0("\n\t", .))) |> 
-  mutate(across(genus,   ~ paste0("\n\t\t", .))) |> 
-  mutate(across(species, ~ paste0("\n\t\t\t", .))) |> 
-  mutate(across(c("Common Name", "AltCommName"), ~ paste0("\n\t\t\t\t{", ., "}"))) |> 
-  mutate(across(AltCommName, ~ str_replace_all(., "\\|", "}\n\t\t\t\t{"))) |>
-  write_file("mammals.txt")
-
 # Making the wide version of the data: ------------------------------------------------
-
 realms <- original_version |> 
   pull(`Biogeographic Realm`) |> 
   unique() |> 
@@ -149,3 +141,13 @@ for (i in countries) {
 wide_version <- select(wide_version,
                        -`Biogeographic Realm`, -`Australasia/Oceania`,
                        -Continent, -Country)
+
+# Writing to file: --------------------------------------------------------------------
+original_version |> 
+  mutate(across(c(Order, Family, genus), reformat)) |> 
+  mutate(across(Family,  ~ paste0("\n\t", .))) |> 
+  mutate(across(genus,   ~ paste0("\n\t\t", .))) |> 
+  mutate(across(species, ~ paste0("\n\t\t\t", .))) |> 
+  mutate(across(c("Common Name", "AltCommName"), ~ paste0("\n\t\t\t\t{", ., "}"))) |> 
+  mutate(across(AltCommName, ~ str_replace_all(., "\\|", "}\n\t\t\t\t{"))) |>
+  write_file("mammals.txt")
