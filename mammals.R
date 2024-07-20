@@ -34,6 +34,17 @@ reformat <- function(x) {
   x
 }
 
+# This function reformats |-separated value into a vector: ----------------------------
+reformat_bars_sep <- function(x) {
+  x |>
+    unique() |> 
+    strsplit("\\|") |>
+    unlist() |>
+    trimws() |> 
+    unique() |>
+    sort()
+}
+
 # This function writes the data on file: ----------------------------------------------
 write_file <- function(x, file, long = TRUE) {
   x |> 
@@ -95,30 +106,18 @@ original_version <- read_excel(file, range = "D5:Z6642") |>
                   str_replace_all("Saint BarthÃ©lemy", "Saint Barthelemy")))
 
 # Making the wide version of the data: ------------------------------------------------
+
 realms <- original_version |> 
   pull(`Biogeographic Realm`) |> 
-  unique() |> 
-  strsplit("\\|") |>
-  unlist() |>
-  unique() |>
-  sort()
+  reformat_bars_sep()
 
 continents <- original_version |> 
   pull(Continent) |> 
-  unique() |> 
-  strsplit("\\|") |>
-  unlist() |>
-  unique() |>
-  sort()
+  reformat_bars_sep()
 
 countries <- original_version |> 
   pull(Country) |> 
-  unique() |> 
-  strsplit("\\|") |>
-  unlist() |>
-  trimws() |> 
-  unique() |>
-  sort() |> 
+  reformat_bars_sep() |> 
   grep2("^$")
 
 wide_version <- original_version
