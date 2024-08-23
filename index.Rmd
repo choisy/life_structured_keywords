@@ -10,19 +10,38 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Files prepared and made freely available by Marc Choisy ([www.instagram.com/marcchoisy](https://www.instagram.com/marcchoisy))
 
+The files contains structured keywords that are structured according to taxonomy with
+these following hierarchical levels:
+
+* order
+
+* family
+
+* genus
+
+* species
+      
+English common names of species are also included when they exist.
+
 ### IOC World Bird List v14.1
+
+All the bird species of the world (11,194 taxa).
+
 Original source: https://worldbirdnames.org
 
 R code to convert into structure keyword: [R code](https://choisy.github.io/life_structured_keywords/birds.R)
 
-Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/birds.txt" download>birds.txt</a>
+Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/birds.txt" download>birds.txt</a> [587 KB]
 
 ### Global Mammal Checklist 2024
+
+All the mammal species of the world (6,635 taxa).
+
 Original source: https://www.mammalwatching.com
 
 R code to convert into structure keyword: [R code](https://choisy.github.io/life_structured_keywords/mammals.R)
 
-Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/mammals.txt" download>mammals.txt</a>
+Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/mammals.txt" download>mammals.txt</a> [537 KB]
 
 
 
