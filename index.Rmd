@@ -1,0 +1,18 @@
+---
+title: "Structured key words"
+output: html_document
+date: "2024-08-23"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+<a href="https://raw.githubusercontent.com/choisy/life_structured_keywords/main/birds.txt" download>Birds</a>
+
+
+
+
