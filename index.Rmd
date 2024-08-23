@@ -1,5 +1,5 @@
 ---
-title: "Structured key words"
+title: "Structured keywords"
 output: html_document
 date: "2024-08-23"
 ---
@@ -8,10 +8,22 @@ date: "2024-08-23"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+Files prepared and made freely available by Marc Choisy ([www.instagram.com/marcchoisy](https://www.instagram.com/marcchoisy))
 
+### IOC World Bird List v14.1
+Original source: https://worldbirdnames.org
 
-<a href="https://choisy.github.io/life_structured_keywords/birds.txt" download>Birds</a>
+R code to convert into structure keyword: [R code](https://choisy.github.io/life_structured_keywords/birds.R)
+
+Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/birds.txt" download>birds.txt</a>
+
+### Global Mammal Checklist 2024
+Original source: https://www.mammalwatching.com
+
+R code to convert into structure keyword: [R code](https://choisy.github.io/life_structured_keywords/mammals.R)
+
+Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/mammals.txt" download>mammals.txt</a>
+
 
 
 
