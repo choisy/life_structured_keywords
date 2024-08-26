@@ -23,6 +23,8 @@ these following hierarchical levels:
       
 English common names of species are also included when they exist.
 
+See [this tutorial](https://youtu.be/PPiVhkbK_5Q?si=WvrxoGaQuXavdinS) on how to load structured keywords in [Photo Mechanic](https://home.camerabits.com).
+
 ### IOC World Bird List v14.1
 
 All the bird species of the world (11,194 taxa).
