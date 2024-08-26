@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Files prepared and made freely available by Marc Choisy ([www.instagram.com/marcchoisy](https://www.instagram.com/marcchoisy))
 
-The files contains structured keywords that are structured according to taxonomy with
+The files contain structured keywords that are structured according to taxonomy with
 these following hierarchical levels:
 
 * order
@@ -29,9 +29,9 @@ All the bird species of the world (11,194 taxa).
 
 Original source: https://worldbirdnames.org
 
-R code to convert into structure keywords file: [R code](https://choisy.github.io/life_structured_keywords/birds.R)
+R code to convert into structured keywords file: [R code](https://choisy.github.io/life_structured_keywords/birds.R)
 
-Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/birds.txt" download>birds.txt</a> [587 KB]
+Structured keywords file: <a href="https://choisy.github.io/life_structured_keywords/birds.txt" download>birds.txt</a> [587 KB]
 
 ### Global Mammal Checklist 2024
 
@@ -39,9 +39,9 @@ All the mammal species of the world (6,635 taxa).
 
 Original source: https://www.mammalwatching.com
 
-R code to convert into structure keywords file: [R code](https://choisy.github.io/life_structured_keywords/mammals.R)
+R code to convert into structured keywords file: [R code](https://choisy.github.io/life_structured_keywords/mammals.R)
 
-Structured keywords: <a href="https://choisy.github.io/life_structured_keywords/mammals.txt" download>mammals.txt</a> [537 KB]
+Structured keywords file: <a href="https://choisy.github.io/life_structured_keywords/mammals.txt" download>mammals.txt</a> [537 KB]
 
 
 
